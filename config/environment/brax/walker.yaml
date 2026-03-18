@@ -1,0 +1,6 @@
+namespace: brax
+env_id: walker2d
+kwargs:
+  mode: F
+  backend: generalized
+

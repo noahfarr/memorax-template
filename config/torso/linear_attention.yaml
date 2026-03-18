@@ -1,0 +1,10 @@
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.LinearAttentionCell
+  head_dim: 16
+  num_heads: 2
+  kernel_init:
+    _target_: flax.linen.initializers.lecun_normal
+  bias_init:
+    _target_: flax.linen.initializers.zeros_init
+  param_dtype: float32

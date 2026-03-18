@@ -1,0 +1,8 @@
+namespace: grimax
+env_id: Odometer-v1
+kwargs:
+  min_target: 5
+  max_target: 50
+  horizon: 60
+  goal_reward: 10.0
+  step_penalty: -0.01

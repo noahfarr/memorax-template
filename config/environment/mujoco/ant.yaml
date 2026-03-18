@@ -1,0 +1,7 @@
+namespace: mujoco
+env_id: ant
+kwargs:
+  mode: F
+wrappers:
+  - _target_: memorax.utils.wrappers.NormalizeObservationWrapper
+  - _target_: memorax.utils.wrappers.ClipActionWrapper

@@ -1,0 +1,2 @@
+namespace: gymnax
+env_id: CartPole-v1

@@ -1,0 +1,7 @@
+namespace: grimax
+env_id: DeadReckoning-v1
+kwargs:
+  grid_size: 64
+  view_size: 3
+  min_goal_distance: 32
+  horizon: 200

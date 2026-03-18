@@ -1,0 +1,5 @@
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: salt.GatedDeltaRuleDiagCell
+  head_dim: 16
+  num_heads: 2

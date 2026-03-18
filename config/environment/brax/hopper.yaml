@@ -1,0 +1,6 @@
+namespace: brax
+env_id: hopper
+kwargs:
+  mode: F
+  backend: generalized
+

@@ -1,0 +1,9 @@
+# @package _global_
+
+embeddings:
+  - observation_embedding
+
+torso:
+  _target_: salt.MoebiusSALT
+  head_dim: 16
+  num_heads: 2

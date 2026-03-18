@@ -1,0 +1,28 @@
+# @package _global_
+
+hidden_size: 256
+
+observation_extractor:
+  _target_: flax.linen.Dense
+  features: 256
+
+action_extractor:
+  _target_: salt.OneHot
+
+head:
+  _target_: memorax.networks.heads.Categorical
+
+total_timesteps: 5_000_000
+num_train_steps: "${eval:'${algorithm.num_envs} * 1000'}"
+num_eval_steps: 1_000
+
+algorithm:
+  num_envs: 16
+  num_steps: 128
+  gae_lambda: 0.95
+  num_minibatches: 4
+  update_epochs: 4
+  normalize_advantage: True
+  clip_coefficient: 0.2
+  clip_value_loss: True
+  entropy_coefficient: 0.02

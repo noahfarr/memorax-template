@@ -1,0 +1,6 @@
+namespace: brax
+env_id: ant
+kwargs:
+  mode: F
+  backend: generalized
+

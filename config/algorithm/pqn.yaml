@@ -1,0 +1,16 @@
+# @package _global_
+
+defaults:
+  - /torso: mlp
+
+num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
+
+algorithm:
+  _target_: memorax.algorithms.PQNConfig
+  name: pqn
+  num_envs: 32
+  num_steps: 128
+  td_lambda: 0.95
+  num_minibatches: 4
+  update_epochs: 4
+

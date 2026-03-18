@@ -1,0 +1,3 @@
+_target_: memorax.networks.FFN
+features: 256
+expansion_factor: 1

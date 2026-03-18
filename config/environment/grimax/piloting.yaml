@@ -1,0 +1,8 @@
+namespace: grimax
+env_id: Piloting-v1
+kwargs:
+  grid_size: 64
+  view_size: 3
+  num_goals: 3
+  teleport_interval: 30
+  horizon: 512

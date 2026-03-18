@@ -1,0 +1,18 @@
+total_timesteps: 10_000_000
+num_train_steps: 100_000
+num_eval_steps: 0
+seed: 0
+num_seeds: 1
+embeddings: oa
+
+defaults:
+  - _self_
+  - algorithm: ppo
+  - environment: gymnax/cartpole
+  - optional hyperparameters: ${cascading_fallback:${algorithm},${environment}}
+  - logger: default
+
+logger:
+  _target_: memorax.loggers.Logger
+  _convert_: all
+  loggers:

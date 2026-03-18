@@ -1,0 +1,31 @@
+[project]
+name = "salt"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "brax>=0.14.0",
+    "fanda",
+    "gymnax>=0.0.9",
+    "popjym",
+    "memorax[cuda,gxm,popgym_arcade]",
+    "hydra-core>=1.3.2",
+    "hydra-submitit-launcher",
+    "omegaconf>=2.3.0",
+    "craftax>=1.5.0",
+]
+
+[project.optional-dependencies]
+cuda = [
+    "memorax[cuda,gxm,popgym_arcade]",
+]
+
+[tool.uv.sources]
+fanda = { git = "https://github.com/noahfarr/fanda.git" }
+popjym = { git = "https://github.com/EdanToledo/popjym.git" }
+memorax = { git = "https://github.com/memory-rl/memorax.git" }
+
+
+[tool.setuptools.packages.find]
+include = ["salt*"]

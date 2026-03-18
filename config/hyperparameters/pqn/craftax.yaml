@@ -1,0 +1,10 @@
+# @package _global_
+total_timesteps: 1_000_000_000
+num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
+
+algorithm:
+  num_envs: 512
+  num_steps: 64
+  num_minibatches: 8
+  update_epochs: 4
+  td_lambda: 0.5

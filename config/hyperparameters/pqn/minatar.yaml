@@ -1,0 +1,13 @@
+# @package _global_
+
+total_timesteps: 10_000_000
+num_train_steps: 200_000
+num_eval_steps: 50_000
+
+algorithm:
+  num_envs: 128
+  num_steps: 32
+  num_minibatches: 32
+  update_epochs: 2
+  td_lambda: 0.65
+
