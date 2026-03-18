@@ -54,6 +54,9 @@ config/
 |--------|-----------|
 | `ppo` | [PPO](https://arxiv.org/abs/1707.06347) |
 | `pqn` | [PQN](https://arxiv.org/abs/2407.04811) |
+| `dqn` | [PQN](https://arxiv.org/abs/2407.04811) |
+| `sac` | [PQN](https://arxiv.org/abs/2407.04811) |
+| `ac_lambda` | [PQN](https://arxiv.org/abs/2407.04811) |
 
 ### Torso Architectures
 
