@@ -1,0 +1,12 @@
+# @package _global_
+
+total_timesteps: 15_000_000
+num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
+num_eval_steps: 832
+
+algorithm:
+  num_envs: 64
+  num_steps: 512
+  tau: 1.0
+  target_update_frequency: 500
+  train_frequency: 4

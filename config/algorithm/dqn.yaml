@@ -1,0 +1,16 @@
+# @package _global_
+
+defaults:
+  - /torso: mlp
+
+num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
+
+algorithm:
+  _target_: memorax.algorithms.DQNConfig
+  name: dqn
+  num_envs: 32
+  num_steps: 128
+  tau: 1.0
+  target_update_frequency: 500
+  train_frequency: 4
+  burn_in_length: 0

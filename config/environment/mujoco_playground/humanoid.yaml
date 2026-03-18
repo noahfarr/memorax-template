@@ -1,0 +1,2 @@
+namespace: mujoco_playground
+env_id: HumanoidRun

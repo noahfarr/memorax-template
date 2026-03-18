@@ -1,0 +1,17 @@
+# @package _global_
+
+total_timesteps: 50_000_000
+num_train_steps: "${eval:'${algorithm.num_envs} * 1000'}"
+num_eval_steps: 0
+
+algorithm:
+  num_envs: 4096
+  num_steps: 8
+  trace_lambda: 0.95
+  actor_lr: 3e-4
+  critic_lr: 3e-4
+  entropy_coefficient: 0.0
+
+environment:
+  wrappers:
+    - _target_: memorax.utils.wrappers.ClipActionWrapper

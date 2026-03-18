@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - /torso: mlp
+
+num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
+
+algorithm:
+  _target_: memorax.algorithms.SACConfig
+  name: sac
+  num_envs: 32
+  num_steps: 128
+  tau: 0.005
+  train_frequency: 1
+  target_update_frequency: 1
+  target_entropy_scale: 0.5
+  gradient_steps: 1
+  burn_in_length: 0
