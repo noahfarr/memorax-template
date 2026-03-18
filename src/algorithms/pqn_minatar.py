@@ -3,43 +3,50 @@ import jax.numpy as jnp
 import optax
 from hydra.utils import instantiate
 from memorax.algorithms import PQN
-from memorax.networks import (
-    Network,
-    heads,
-)
+from memorax.networks import FeatureExtractor, Network, heads
 from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
-
-from salt.networks import SelectiveFeatureExtractor
 
 flatten = lambda x: x.reshape(*x.shape[:2], -1).astype(jnp.float32)
 
 
 def make(cfg, env, env_params):
 
-    feature_extractor = SelectiveFeatureExtractor(
-        observation_extractor=nn.Sequential([
-            nn.Conv(16, (3, 3), strides=1),
-            nn.relu,
-            flatten,
-        ]),
+    feature_extractor = FeatureExtractor(
+        observation_extractor=nn.Sequential(
+            (
+                nn.Conv(16, (3, 3), strides=1),
+                nn.relu,
+                flatten,
+            )
+        ),
         action_extractor=nn.Sequential(
-            [
+            (
                 nn.Embed(
                     num_embeddings=env.action_space(env_params).n,
                     features=32,
                 ),
                 nn.relu,
                 nn.LayerNorm(),
-            ]
+            )
         ),
-        embeddings=cfg.embeddings,
     )
 
     blocks = [Projection(features=256)]
-    blocks += [m for _ in range(2) for m in (
-        GatedResidual(module=PreNorm(norm=nn.RMSNorm, module=instantiate(cfg.torso))),
-        GatedResidual(module=PreNorm(norm=nn.RMSNorm, module=GLU(features=256, expansion_factor=4, activation=nn.silu))),
-    )]
+    blocks += [
+        m
+        for _ in range(2)
+        for m in (
+            GatedResidual(
+                module=PreNorm(norm=nn.RMSNorm, module=instantiate(cfg.torso))
+            ),
+            GatedResidual(
+                module=PreNorm(
+                    norm=nn.RMSNorm,
+                    module=GLU(features=256, expansion_factor=4, activation=nn.silu),
+                )
+            ),
+        )
+    ]
     torso = Stack(blocks=tuple(blocks))
 
     head = heads.DiscreteQNetwork(

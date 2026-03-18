@@ -7,16 +7,15 @@ import optax
 from hydra.utils import instantiate
 from memorax.algorithms import PQN
 from memorax.networks import (
+    FeatureExtractor,
     Network,
     heads,
 )
 from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
 
-from salt.networks import SelectiveFeatureExtractor
-
 def make(cfg, env, env_params):
 
-    feature_extractor = SelectiveFeatureExtractor(
+    feature_extractor = FeatureExtractor(
         observation_extractor=nn.Sequential([
             lambda x: x.astype(jnp.float32) / 255.0,
             nn.Conv(64, (5, 5), strides=2, padding='VALID'),
@@ -30,7 +29,6 @@ def make(cfg, env, env_params):
             lambda x: x.reshape(*x.shape[:2], -1).astype(jnp.float32),
         ]),
         action_extractor=lambda x: jax.nn.one_hot(x, env.action_space(env_params).n),
-        embeddings=cfg.embeddings,
     )
 
     blocks = [Projection(features=256)]

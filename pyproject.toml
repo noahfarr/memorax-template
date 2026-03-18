@@ -5,25 +5,18 @@ description = "Template project for memorax experiments"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "brax>=0.14.0",
-    "fanda",
-    "gymnax>=0.0.9",
-    "popjym",
-    "memorax[cuda,gxm,popgym_arcade]",
+    "memorax[popjym,popgym_arcade,craftax,brax,atari,pobax]",
     "hydra-core>=1.3.2",
     "hydra-submitit-launcher",
     "omegaconf>=2.3.0",
-    "craftax>=1.5.0",
 ]
 
 [project.optional-dependencies]
 cuda = [
-    "memorax[cuda,gxm,popgym_arcade]",
+    "memorax[cuda,popjym,popgym_arcade,craftax,brax,atari,pobax]",
 ]
 
 [tool.uv.sources]
-fanda = { git = "https://github.com/noahfarr/fanda.git" }
-popjym = { git = "https://github.com/EdanToledo/popjym.git" }
 memorax = { git = "https://github.com/memory-rl/memorax.git" }
 
 

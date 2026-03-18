@@ -1,13 +1,14 @@
+import time
 from datetime import datetime
 from pathlib import Path
 
 import hydra
 import jax
-import jax.numpy as jnp
+import lox
 import orbax.checkpoint as ocp
 from hydra.core.hydra_config import HydraConfig
 from hydra.utils import instantiate
-from omegaconf import OmegaConf
+from memorax.loggers import MultiLogger
 
 from src import algorithm, environment
 
@@ -22,64 +23,66 @@ def main(cfg):
         * cfg.algorithm.num_envs
     )
 
-    logger = instantiate(cfg.logger)
-    logger_state = logger.init(cfg=OmegaConf.to_container(cfg, resolve=True))
+    loggers = [instantiate(v) for v in (cfg.loggers or {}).values()]
+    logger = MultiLogger(loggers)
 
     agent = algorithm.make(cfg, env, env_params)
 
     key = jax.random.key(cfg.seed)
-    keys = jax.random.split(key, cfg.num_seeds)
 
     init = jax.vmap(agent.init)
-    train = jax.vmap(agent.train, in_axes=(0, 0, None))
+    train = jax.vmap(lox.spool(agent.train), in_axes=(0, 0, None))
 
     if cfg.num_eval_steps:
-        evaluate = jax.vmap(agent.evaluate, in_axes=(0, 0, None))
+        evaluate = jax.vmap(lox.spool(agent.evaluate), in_axes=(0, 0, None))
 
-    def episode_stats(t):
-        mask = t.metadata["returned_episode"]
-        returns = jnp.where(mask, t.metadata["returned_episode_returns"], jnp.nan)
-        lengths = jnp.where(mask, t.metadata["returned_episode_lengths"], jnp.nan)
-        return {
-            "mean_episode_returns": jnp.nanmean(returns),
-            "mean_episode_lengths": jnp.nanmean(lengths),
-            "num_episodes": jnp.sum(mask),
-        }
-
-    def log(state, transitions, SPS, logger_state, prefix):
-        infos = jax.vmap(lambda t: t.info)(transitions)
-        leaves, treedef = jax.tree.flatten_with_path(infos)
-        keys = [
-            jax.tree_util.keystr(path).replace("']['", "/").strip("['']")
-            for path, _ in leaves
-        ]
-        infos = {f"{prefix}/{k}": v for k, (_, v) in zip(keys, leaves)}
-        losses = jax.vmap(lambda t: t.losses)(transitions)
-        ep_stats = jax.vmap(episode_stats)(transitions)
-        ep_stats = {f"{prefix}/{k}": v for k, v in ep_stats.items()}
-        ep_stats = {k: jnp.where(jnp.isnan(v), 0.0, v) for k, v in ep_stats.items()}
-        data = {**infos, **losses, **ep_stats, f"{prefix}/SPS": SPS}
-        logger_state = logger.log(logger_state, data, step=state.step[0].item())
-        logger.emit(logger_state)
-        return logger_state
-
-    keys, state = init(keys)
+    key, init_key = jax.random.split(key)
+    state = init(jax.random.split(init_key, cfg.num_seeds))
 
     for step in range(0, cfg.total_timesteps, num_train_steps):
 
-        (keys, state, transitions), SPS = train(keys, state, num_train_steps)
+        start = time.perf_counter()
+        key, train_key = jax.random.split(key)
+        state, logs = train(
+            jax.random.split(train_key, cfg.num_seeds), state, num_train_steps
+        )
+        jax.block_until_ready(state)
+        end = time.perf_counter()
 
-        logger_state = log(state, transitions, SPS, logger_state, "training")
+        SPS = int(num_train_steps / (end - start))
+
+        info = logs.pop("info")
+        episode_returns = info["returned_episode_returns"][info["returned_episode"]]
+        episode_lengths = info["returned_episode_lengths"][info["returned_episode"]]
+
+        data = {
+            "training/SPS": SPS,
+            "training/episode_returns": episode_returns,
+            "training/episode_lengths": episode_lengths,
+            **logs,
+        }
+        logger.log(data, step=state.step.mean().item())
 
         if cfg.num_eval_steps:
-            (keys, transitions), SPS = evaluate(keys, state, cfg.num_eval_steps)
-            logger_state = log(
-                state,
-                transitions,
-                SPS,
-                logger_state,
-                "evaluation",
+            key, eval_key = jax.random.split(key)
+            state, eval_logs = evaluate(
+                jax.random.split(eval_key, cfg.num_seeds), state, cfg.num_eval_steps
             )
+
+            eval_info = eval_logs.pop("info")
+            eval_returns = eval_info["returned_episode_returns"][
+                eval_info["returned_episode"]
+            ]
+            eval_lengths = eval_info["returned_episode_lengths"][
+                eval_info["returned_episode"]
+            ]
+
+            eval_data = {
+                "evaluation/episode_returns": eval_returns,
+                "evaluation/episode_lengths": eval_lengths,
+                **eval_logs,
+            }
+            logger.log(eval_data, step=state.step.mean().item())
 
     choices = HydraConfig.get().runtime.choices
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -98,7 +101,7 @@ def main(cfg):
             ckptr.save(directory, seed_state)
         ckptr.wait_until_finished()
 
-    logger.finish(logger_state)
+    logger.finish()
 
 
 if __name__ == "__main__":

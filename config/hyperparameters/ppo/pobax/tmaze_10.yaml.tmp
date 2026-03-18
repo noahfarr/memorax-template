@@ -1,5 +1,0 @@
-import yaml, sys
-with open(sys.argv[1]) as f:
-    lines = f.read()
-# Get hidden_size value
-hs = [l.split(': ')[1].strip() for l in lines.split('\n') if l.startswith('hidden_size:')][0]

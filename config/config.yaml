@@ -5,14 +5,11 @@ seed: 0
 num_seeds: 1
 embeddings: oa
 
+loggers: {}
+
 defaults:
   - _self_
   - algorithm: ppo
   - environment: gymnax/cartpole
   - optional hyperparameters: ${cascading_fallback:${algorithm},${environment}}
   - logger: default
-
-logger:
-  _target_: memorax.loggers.Logger
-  _convert_: all
-  loggers:

@@ -1,38 +1,47 @@
-import jax.numpy as jnp
 import flax.linen as nn
+import jax.numpy as jnp
 import optax
 from hydra.utils import instantiate
 from memorax.algorithms.ppo import PPO
-from memorax.networks import (
-    Network,
-    heads,
-)
+from memorax.networks import FeatureExtractor, Network, heads
 from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
-
-from salt.networks import SelectiveFeatureExtractor
 
 
 def make(cfg, env, env_params):
 
     blocks = [Projection(features=256)]
-    blocks += [m for _ in range(2) for m in (
-        GatedResidual(module=PreNorm(norm=nn.RMSNorm, module=instantiate(cfg.torso))),
-        GatedResidual(module=PreNorm(norm=nn.RMSNorm, module=GLU(features=256, expansion_factor=4, activation=nn.silu))),
-    )]
+    blocks += [
+        m
+        for _ in range(2)
+        for m in (
+            GatedResidual(
+                module=PreNorm(norm=nn.RMSNorm, module=instantiate(cfg.torso))
+            ),
+            GatedResidual(
+                module=PreNorm(
+                    norm=nn.RMSNorm,
+                    module=GLU(features=256, expansion_factor=4, activation=nn.silu),
+                )
+            ),
+        )
+    ]
     torso = Stack(blocks=tuple(blocks))
 
-    feature_extractor = SelectiveFeatureExtractor(
-        observation_extractor=nn.Sequential([
-            nn.Dense(256, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
-            nn.tanh,
-            nn.Dense(256, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
-            nn.tanh,
-        ]),
-        action_extractor=nn.Sequential([
-            nn.Dense(64, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
-            nn.tanh,
-        ]),
-        embeddings=cfg.embeddings,
+    feature_extractor = FeatureExtractor(
+        observation_extractor=nn.Sequential(
+            [
+                nn.Dense(256, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
+                nn.tanh,
+                nn.Dense(256, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
+                nn.tanh,
+            ]
+        ),
+        action_extractor=nn.Sequential(
+            [
+                nn.Dense(64, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
+                nn.tanh,
+            ]
+        ),
     )
 
     actor_network = Network(

@@ -6,11 +6,8 @@ import jax.numpy as jnp
 import optax
 from hydra.utils import instantiate
 from memorax.algorithms import PQN
-from memorax.networks import Network, heads
+from memorax.networks import FeatureExtractor, Network, heads
 from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Stack
-from omegaconf import OmegaConf
-
-from salt.networks import SelectiveFeatureExtractor
 
 flatten = lambda x: x.reshape(*x.shape[:2], -1).astype(jnp.float32)
 
@@ -19,7 +16,7 @@ def make(cfg, env, env_params):
 
     num_actions = env.action_space(env_params).n
 
-    feature_extractor = SelectiveFeatureExtractor(
+    feature_extractor = FeatureExtractor(
         observation_extractor=nn.Sequential(
             (
                 flatten,
@@ -29,8 +26,6 @@ def make(cfg, env, env_params):
             )
         ),
         action_extractor=partial(jax.nn.one_hot, num_classes=num_actions),
-        embeddings=cfg.embeddings,
-        features=256,
     )
 
     blocks = [

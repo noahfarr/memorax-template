@@ -3,12 +3,11 @@ import optax
 from hydra.utils import instantiate
 from memorax.algorithms.ppo import PPO
 from memorax.networks import (
+    FeatureExtractor,
     Network,
     heads,
 )
 from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
-
-from salt.networks import SelectiveFeatureExtractor
 
 
 def make(cfg, env, env_params):
@@ -20,10 +19,9 @@ def make(cfg, env, env_params):
     action_extractor = instantiate(cfg.action_extractor, action_dim=action_dim)
     head = instantiate(cfg.head, action_dim=action_dim)
 
-    feature_extractor = SelectiveFeatureExtractor(
+    feature_extractor = FeatureExtractor(
         observation_extractor=observation_extractor,
         action_extractor=action_extractor,
-        embeddings=cfg.embeddings,
     )
 
     blocks = [Projection(features=hidden_size)]

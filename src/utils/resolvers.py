@@ -5,7 +5,7 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.utils import instantiate
 from omegaconf import OmegaConf
 
-from salt import environment
+from src import environment
 
 
 def get_action_dim(cfg):

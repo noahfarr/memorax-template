@@ -1,5 +1,5 @@
 from hydra.utils import instantiate
-from memorax.environments import environment
+from memorax.environments import RecordEpisodeStatistics, environment
 
 
 def make(namespace, env_id, **kwargs):
@@ -9,6 +9,7 @@ def make(namespace, env_id, **kwargs):
     if env_params is not None:
         env_params = env_params.replace(**kwargs.get("env_params", {}))
 
+    env = RecordEpisodeStatistics(env)
     for wrapper in kwargs.get("wrappers", []):
         env = instantiate(wrapper, env)
 

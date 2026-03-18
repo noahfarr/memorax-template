@@ -5,10 +5,8 @@ import jax
 import optax
 from hydra.utils import instantiate
 from memorax.algorithms import PQN
-from memorax.networks import Network, heads
+from memorax.networks import FeatureExtractor, Network, heads
 from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
-
-from salt.networks import SelectiveFeatureExtractor
 
 
 def make(cfg, env, env_params):
@@ -19,7 +17,7 @@ def make(cfg, env, env_params):
             block = block.clone(features=256)
         return block
 
-    feature_extractor = SelectiveFeatureExtractor(
+    feature_extractor = FeatureExtractor(
         observation_extractor=nn.Sequential(
             (
                 nn.Dense(features=256),
@@ -30,7 +28,6 @@ def make(cfg, env, env_params):
         action_extractor=nn.Sequential(
             (partial(jax.nn.one_hot, num_classes=env.action_space(env_params).n),)
         ),
-        embeddings=cfg.embeddings,
     )
 
     blocks = [Projection(features=256)]
