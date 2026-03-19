@@ -1,0 +1,8 @@
+name: sLSTM
+_target_: memorax.networks.RNN
+cell:
+  _target_: memorax.networks.sequence_models.sLSTMCell
+  features: 256
+  hidden_dim: 512
+  num_heads: 4
+  param_dtype: float32

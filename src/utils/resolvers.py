@@ -45,7 +45,7 @@ def cascading_fallback(algorithm: str, environment: str, torso=None) -> str:
 
 
 def get_group(_root_):
-    group = f"{_root_.algorithm.name}_{_root_.environment.namespace}_{_root_.environment.env_id}_{'_'.join(f'{k}_{v}' for k, v in sorted(_root_.environment.get('kwargs', {}).items()))}"
+    group = f"{_root_.algorithm.name}_{_root_.environment.namespace}_{_root_.environment.env_id}_{_root_.torso.name}_{'_'.join(f'{k}_{v}' for k, v in sorted(_root_.environment.get('kwargs', {}).items()))}"
     if len(group) > 128:
         group = group[:128]
     return group

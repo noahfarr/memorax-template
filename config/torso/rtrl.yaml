@@ -1,0 +1,8 @@
+name: RTRL
+_target_: memorax.networks.sequence_models.RTRL
+sequence_model:
+  _target_: memorax.networks.RNN
+  cell:
+    _target_: memorax.networks.sequence_models.RTUCell
+    features: 256
+    hidden_dim: 128

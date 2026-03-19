@@ -8,8 +8,11 @@ dependencies = [
     "memorax[popjym,popgym_arcade,craftax,brax,atari,pobax,grimax,navix,xminigrid,playground]",
     "hydra-core>=1.3.2",
     "hydra-submitit-launcher",
+    "hydra-optuna-sweeper",
     "omegaconf>=2.3.0",
     "flashbax",
+    "fanda",
+    "evosax",
 ]
 
 [project.optional-dependencies]
@@ -18,7 +21,8 @@ cuda = [
 ]
 
 [tool.uv.sources]
-memorax = { git = "https://github.com/memory-rl/memorax.git" }
+memorax = { git = "https://github.com/noahfarr/memorax.git" }
+fanda = { git = "https://github.com/noahfarr/fanda.git" }
 
 
 [tool.setuptools.packages.find]

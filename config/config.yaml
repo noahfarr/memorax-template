@@ -1,7 +1,8 @@
 total_timesteps: 10_000_000
-num_train_steps: 100_000
+num_epochs: 100
 num_eval_steps: 0
 seed: 0
+checkpoint: false
 num_seeds: 1
 embeddings: oa
 

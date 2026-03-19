@@ -1,0 +1,19 @@
+defaults:
+  - optuna
+  - _self_
+
+direction: maximize
+study_name: null
+storage: null
+n_trials: 100
+n_jobs: 1
+max_failure_rate: 0.5
+
+sampler:
+  _target_: optuna.samplers.TPESampler
+  seed: 0
+  multivariate: true
+  group: true
+  constant_liar: true
+  n_startup_trials: 15
+  n_ei_candidates: 24

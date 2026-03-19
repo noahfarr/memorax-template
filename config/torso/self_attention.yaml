@@ -1,0 +1,10 @@
+name: Self Attention
+_target_: memorax.networks.sequence_models.SelfAttention
+features: 256
+num_heads: 2
+context_length: 128
+param_dtype: float32
+kernel_init:
+  _target_: flax.linen.initializers.lecun_normal
+bias_init:
+  _target_: flax.linen.initializers.zeros_init

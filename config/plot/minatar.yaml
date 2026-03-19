@@ -1,0 +1,21 @@
+entity: noahfarr
+project: memorax
+
+algorithms:
+  - pqn
+  - ppo
+torsos:
+  - MLP
+  - GRU
+states:
+  - running
+  - finished
+  - crashed
+environment: MinAtar
+prefix: training
+group_by: torso.name
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null

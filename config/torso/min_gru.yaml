@@ -1,0 +1,10 @@
+name: MinGRU
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.MinGRUCell
+  features: 256
+  kernel_init:
+    _target_: flax.linen.initializers.lecun_normal
+  bias_init:
+    _target_: flax.linen.initializers.zeros_init
+  param_dtype: float32

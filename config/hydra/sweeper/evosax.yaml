@@ -1,0 +1,11 @@
+defaults:
+  - evosax
+  - _self_
+
+strategy: CMA_ES
+popsize: 32
+num_generations: 50
+direction: maximize
+seed: 0
+strategy_kwargs: {}
+params: null

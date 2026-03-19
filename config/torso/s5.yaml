@@ -1,0 +1,7 @@
+name: S5
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.S5Cell
+  features: 256
+  state_size: 512
+  param_dtype: float32

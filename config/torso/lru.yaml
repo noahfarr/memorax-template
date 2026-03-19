@@ -1,0 +1,7 @@
+name: LRU
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.LRUCell
+  features: 256
+  hidden_dim: 512
+  param_dtype: float32

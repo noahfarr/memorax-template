@@ -1,0 +1,5 @@
+namespace: atari
+suite: atari
+env_id: Breakout
+kwargs:
+  num_envs: 32

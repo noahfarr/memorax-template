@@ -1,5 +1,5 @@
 namespace: gymnax
-family: bsuite
+suite: bsuite
 env_id: MemoryChain-bsuite
 env_params:
   memory_length: 5

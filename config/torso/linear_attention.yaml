@@ -1,6 +1,8 @@
+name: Linear Attention
 _target_: memorax.networks.sequence_models.Memoroid
 cell:
   _target_: memorax.networks.sequence_models.LinearAttentionCell
+  features: 256
   head_dim: 16
   num_heads: 2
   kernel_init:

@@ -3,8 +3,6 @@
 defaults:
   - /torso: mlp
 
-num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
-
 algorithm:
   _target_: memorax.algorithms.DQNConfig
   name: dqn

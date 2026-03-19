@@ -1,5 +1,5 @@
 namespace: gxm
-family: atari
+suite: atari
 env_id: Gymnasium/ALE/Breakout-v5
 wrappers:
   - _target_: gymnax.wrappers.FlattenObservationWrapper

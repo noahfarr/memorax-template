@@ -1,0 +1,12 @@
+name: FFM
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.FFMCell
+  features: 256
+  memory_size: 16
+  context_size: 16
+  kernel_init:
+    _target_: flax.linen.initializers.lecun_normal
+  bias_init:
+    _target_: flax.linen.initializers.zeros_init
+  param_dtype: float32

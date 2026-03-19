@@ -1,0 +1,10 @@
+name: Mamba
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.MambaCell
+  features: 256
+  num_heads: 2
+  head_dim: 16
+  state_dim: 16
+  conv_dim: 4
+  param_dtype: float32

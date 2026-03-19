@@ -3,7 +3,7 @@
 # (bolt-research/popgym-arcade, arXiv:2503.01450)
 
 total_timesteps: 20_000_000
-num_train_steps: 2_000_000
+num_epochs: 10
 num_eval_steps: 50_000
 
 algorithm:

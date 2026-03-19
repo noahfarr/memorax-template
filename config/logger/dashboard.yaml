@@ -5,4 +5,5 @@ refresh_per_second: 1
 summary:
   Algorithm: ${algorithm.name}
   Environment: ${environment.env_id}
+  Torso: ${torso.name}
   Total Timesteps: ${total_timesteps}

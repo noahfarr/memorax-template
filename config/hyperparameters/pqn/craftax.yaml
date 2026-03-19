@@ -1,6 +1,6 @@
 # @package _global_
 total_timesteps: 1_000_000_000
-num_train_steps: ${eval:${algorithm.num_steps} * ${algorithm.num_envs}}
+num_epochs: 30517
 
 algorithm:
   num_envs: 512

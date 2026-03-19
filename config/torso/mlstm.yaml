@@ -1,0 +1,8 @@
+name: mLSTM
+_target_: memorax.networks.sequence_models.Memoroid
+cell:
+  _target_: memorax.networks.sequence_models.mLSTMCell
+  features: 256
+  hidden_dim: 16
+  num_heads: 2
+  param_dtype: float32

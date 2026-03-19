@@ -1,0 +1,11 @@
+# @package _global_
+
+total_timesteps: 1_000_000
+num_epochs: 100
+
+algorithm:
+  num_envs: 32
+  num_steps: 128
+  num_minibatches: 4
+  update_epochs: 4
+  td_lambda: 0.95

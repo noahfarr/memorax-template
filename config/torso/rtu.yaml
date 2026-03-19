@@ -1,0 +1,6 @@
+name: RTU
+_target_: memorax.networks.RNN
+cell:
+  _target_: memorax.networks.sequence_models.RTUCell
+  features: 256
+  hidden_dim: 128

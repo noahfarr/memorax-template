@@ -1,0 +1,4 @@
+namespace: gymnasium
+env_id: CartPole-v1
+kwargs:
+  num_envs: 32
