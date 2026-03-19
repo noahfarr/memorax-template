@@ -7,7 +7,9 @@ observation_extractor:
   features: 256
 
 action_extractor:
-  _target_: salt.OneHot
+  _target_: jax.nn.one_hot
+  num_classes: ${get_action_dim:${environment}}
+  _partial_: true
 
 total_timesteps: 5_000_000
 num_epochs: 312

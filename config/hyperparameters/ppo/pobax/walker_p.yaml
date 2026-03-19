@@ -7,8 +7,14 @@ observation_extractor:
   features: 256
 
 action_extractor:
-  _target_: salt.ActionDense
-  features: 64
+  _target_: flax.linen.Sequential
+  layers:
+    _target_: builtins.tuple
+    _args_:
+      - - _target_: flax.linen.Dense
+            features: 64
+          - _target_: flax.linen.relu
+            _partial_: true
 
 actor_head:
   _target_: memorax.networks.heads.Gaussian
