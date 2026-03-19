@@ -2,6 +2,47 @@
 
 defaults:
   - /torso: mlp
+  - /stack: llama
+
+head:
+  _target_: memorax.networks.heads.DiscreteQNetwork
+  action_dim: ${get_action_dim:${environment}}
+
+feature_extractor:
+  _target_: memorax.networks.FeatureExtractor
+  _convert_: object
+  observation_extractor:
+    _target_: flax.linen.Sequential
+    layers:
+      _target_: builtins.tuple
+      _args_:
+        - - _target_: flax.linen.Dense
+            features: 256
+          - _target_: flax.linen.relu
+
+optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 1.0
+    - _target_: optax.adam
+      learning_rate: 5e-4
+      eps: 1e-5
+
+epsilon_schedule:
+  _target_: optax.linear_schedule
+  init_value: 1.0
+  end_value: 0.05
+  transition_steps: ${eval:'int(0.2 * ${total_timesteps})'}
+
+buffer:
+  _target_: flashbax.make_trajectory_buffer
+  add_batch_size: ${algorithm.num_envs}
+  sample_batch_size: 32
+  sample_sequence_length: ${algorithm.num_steps}
+  period: 1
+  min_length_time_axis: ${algorithm.num_steps}
+  max_length_time_axis: 10_000
 
 algorithm:
   _target_: memorax.algorithms.DQNConfig

@@ -1,0 +1,7 @@
+name: LLaMA
+_target_: src.stacks.llama
+_recursive_: false
+features: 256
+num_layers: 2
+expansion_factor: 4
+torso: ${torso}

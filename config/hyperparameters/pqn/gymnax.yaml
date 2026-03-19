@@ -1,8 +1,5 @@
 # @package _global_
 
-total_timesteps: 1_000_000
-num_epochs: 100
-
 optimizer:
   _target_: optax.chain
   _args_:
@@ -14,10 +11,3 @@ optimizer:
 
 epsilon_schedule:
   transition_steps: ${eval:'int(0.2 * ${total_timesteps})'}
-
-algorithm:
-  num_envs: 32
-  num_steps: 128
-  num_minibatches: 4
-  update_epochs: 4
-  td_lambda: 0.95

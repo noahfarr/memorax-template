@@ -2,6 +2,37 @@
 
 defaults:
   - /torso: mlp
+  - /stack: llama
+
+actor_head:
+  _target_: memorax.networks.heads.Categorical
+  action_dim: ${get_action_dim:${environment}}
+
+critic_head:
+  _target_: memorax.networks.heads.VNetwork
+  kernel_init:
+    _target_: flax.linen.initializers.orthogonal
+    scale: 1.0
+
+feature_extractor:
+  _target_: memorax.networks.FeatureExtractor
+  _convert_: object
+  observation_extractor:
+    _target_: flax.linen.Sequential
+    layers:
+      _target_: builtins.tuple
+      _args_:
+        - - _target_: flax.linen.Dense
+            features: 256
+          - _target_: flax.linen.relu
+
+optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 0.5
+    - _target_: optax.adam
+      learning_rate: 3e-4
 
 algorithm:
   _target_: memorax.algorithms.MAPPOConfig

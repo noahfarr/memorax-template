@@ -4,6 +4,18 @@ total_timesteps: 15_000_000
 num_epochs: 114
 num_eval_steps: 832
 
+optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 0.5
+    - _target_: optax.adam
+      learning_rate: 3e-4
+      eps: 1e-5
+
+epsilon_schedule:
+  transition_steps: ${eval:'int(0.25 * (2_000_000 // ${algorithm.num_steps} // ${algorithm.num_envs}) * ${algorithm.num_minibatches} * ${algorithm.num_steps} * ${algorithm.num_envs})'}
+
 algorithm:
   num_envs: 256
   num_steps: 512

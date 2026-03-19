@@ -1,11 +1,7 @@
 import jax
 import flax.linen as nn
-import jax.numpy as jnp
-import optax
 from hydra.utils import instantiate
 from memorax.algorithms import MAPPO
-from memorax.networks import FeatureExtractor, heads
-from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
 from memorax.utils.typing import Array, Carry
 
 
@@ -55,65 +51,22 @@ class MultiAgentNetwork(nn.Module):
 
 
 def make(cfg, env, env_params):
-
-    action_space = env.action_spaces[env.agents[0]]
-    action_dim = action_space.n
-
-    feature_extractor = FeatureExtractor(
-        observation_extractor=nn.Sequential(
-            [
-                nn.Dense(256, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
-                nn.tanh,
-                nn.Dense(256, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
-                nn.tanh,
-            ]
-        ),
-        action_extractor=nn.Sequential(
-            [
-                nn.Dense(64, kernel_init=nn.initializers.orthogonal(jnp.sqrt(2))),
-                nn.tanh,
-            ]
-        ),
-    )
-
-    blocks = [Projection(features=256)]
-    blocks += [
-        m
-        for _ in range(2)
-        for m in (
-            GatedResidual(
-                module=PreNorm(norm=nn.RMSNorm, module=instantiate(cfg.torso))
-            ),
-            GatedResidual(
-                module=PreNorm(
-                    norm=nn.RMSNorm,
-                    module=GLU(features=256, expansion_factor=4, activation=nn.silu),
-                )
-            ),
-        )
-    ]
-    torso = Stack(blocks=tuple(blocks))
+    feature_extractor = instantiate(cfg.feature_extractor)
+    torso = instantiate(cfg.stack)
 
     actor_network = MultiAgentNetwork(
         feature_extractor=feature_extractor,
         torso=torso,
-        head=heads.Categorical(
-            action_dim=action_dim,
-        ),
+        head=instantiate(cfg.actor_head),
     )
 
     critic_network = MultiAgentNetwork(
         feature_extractor=feature_extractor,
         torso=torso,
-        head=heads.VNetwork(
-            kernel_init=nn.initializers.orthogonal(1.0),
-        ),
+        head=instantiate(cfg.critic_head),
     )
 
-    optimizer = optax.chain(
-        optax.clip_by_global_norm(0.5),
-        optax.adam(learning_rate=3e-4),
-    )
+    optimizer = instantiate(cfg.optimizer)
 
     agent = MAPPO(
         cfg=instantiate(cfg.algorithm),

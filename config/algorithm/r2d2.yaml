@@ -2,6 +2,54 @@
 
 defaults:
   - /torso: mlp
+  - /stack: llama
+
+head:
+  _target_: memorax.networks.heads.DiscreteQNetwork
+  action_dim: ${get_action_dim:${environment}}
+
+feature_extractor:
+  _target_: memorax.networks.FeatureExtractor
+  _convert_: object
+  observation_extractor:
+    _target_: flax.linen.Sequential
+    layers:
+      _target_: builtins.tuple
+      _args_:
+        - - _target_: flax.linen.Dense
+            features: 256
+          - _target_: flax.linen.relu
+
+optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 1.0
+    - _target_: optax.adam
+      learning_rate: 5e-4
+      eps: 1e-5
+
+epsilon_schedule:
+  _target_: optax.linear_schedule
+  init_value: 1.0
+  end_value: 0.05
+  transition_steps: ${eval:'int(0.2 * ${total_timesteps})'}
+
+beta_schedule:
+  _target_: optax.linear_schedule
+  init_value: ${algorithm.importance_sampling_exponent}
+  end_value: 1.0
+  transition_steps: ${total_timesteps}
+
+buffer:
+  _target_: flashbax.make_prioritised_trajectory_buffer
+  add_batch_size: ${algorithm.num_envs}
+  sample_batch_size: 32
+  sample_sequence_length: ${eval:'${algorithm.sequence_length} + ${algorithm.burn_in_length}'}
+  period: 1
+  min_length_time_axis: ${eval:'${algorithm.sequence_length} + ${algorithm.burn_in_length}'}
+  max_length_time_axis: 10_000
+  priority_exponent: ${algorithm.priority_exponent}
 
 algorithm:
   _target_: memorax.algorithms.R2D2Config

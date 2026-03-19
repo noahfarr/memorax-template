@@ -9,9 +9,6 @@ observation_extractor:
 action_extractor:
   _target_: salt.OneHot
 
-head:
-  _target_: memorax.networks.heads.Categorical
-
 total_timesteps: 50_000_000
 num_epochs: 195
 num_eval_steps: 0

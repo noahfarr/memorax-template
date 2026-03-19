@@ -2,6 +2,59 @@
 
 defaults:
   - /torso: mlp
+  - /stack: llama
+
+actor_head:
+  _target_: memorax.networks.heads.SquashedGaussian
+  action_dim: ${get_action_dim:${environment}}
+
+critic_head:
+  _target_: memorax.networks.heads.TwinContinuousQNetwork
+
+alpha:
+  _target_: memorax.networks.heads.Alpha
+  initial_alpha: 1.0
+
+feature_extractor:
+  _target_: memorax.networks.FeatureExtractor
+  _convert_: object
+  observation_extractor:
+    _target_: flax.linen.Sequential
+    layers:
+      _target_: builtins.tuple
+      _args_:
+        - - _target_: flax.linen.Dense
+            features: 256
+          - _target_: flax.linen.relu
+
+actor_optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 0.5
+    - _target_: optax.adam
+      learning_rate: 3e-4
+
+critic_optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 0.5
+    - _target_: optax.adam
+      learning_rate: 3e-4
+
+alpha_optimizer:
+  _target_: optax.adam
+  learning_rate: 3e-4
+
+buffer:
+  _target_: flashbax.make_trajectory_buffer
+  add_batch_size: ${algorithm.num_envs}
+  sample_batch_size: 256
+  sample_sequence_length: ${algorithm.num_steps}
+  period: 1
+  min_length_time_axis: ${algorithm.num_steps}
+  max_length_time_axis: 100_000
 
 algorithm:
   _target_: memorax.algorithms.SACConfig

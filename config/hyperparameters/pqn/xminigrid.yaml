@@ -3,6 +3,9 @@
 total_timesteps: 10_000_000
 num_epochs: 305
 
+epsilon_schedule:
+  transition_steps: ${eval:'int(0.25 * ${total_timesteps})'}
+
 algorithm:
   num_envs: 128
   num_steps: 256

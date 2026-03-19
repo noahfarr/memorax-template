@@ -4,6 +4,13 @@ total_timesteps: 50_000_000
 num_epochs: 12
 num_eval_steps: 0
 
+actor_head:
+  _target_: memorax.networks.heads.Gaussian
+  action_dim: ${get_action_dim:${environment}}
+  kernel_init:
+    _target_: flax.linen.initializers.orthogonal
+    scale: 0.01
+
 algorithm:
   num_envs: 4096
   num_steps: 8

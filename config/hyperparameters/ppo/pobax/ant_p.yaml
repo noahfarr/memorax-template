@@ -10,8 +10,12 @@ action_extractor:
   _target_: salt.ActionDense
   features: 64
 
-head:
+actor_head:
   _target_: memorax.networks.heads.Gaussian
+  action_dim: ${get_action_dim:${environment}}
+  kernel_init:
+    _target_: flax.linen.initializers.orthogonal
+    scale: 0.01
 
 total_timesteps: 50_000_000
 num_epochs: 195
