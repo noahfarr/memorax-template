@@ -7,25 +7,18 @@ num_eval_steps: 50_000
 feature_extractor:
   observation_extractor:
     layers:
-      _args_:
-        - - _target_: flax.linen.Conv
-            features: 16
-            kernel_size:
-              _target_: builtins.tuple
-              _args_:
-                - [3, 3]
-            strides:
-              _target_: builtins.tuple
-              _args_:
-                - [1, 1]
-          - _target_: flax.linen.relu
-            _partial_: true
-          - _target_: memorax.networks.Flatten
-            start_dim: 2
-          - _target_: flax.linen.Dense
-            features: 128
-          - _target_: flax.linen.relu
-            _partial_: true
+      - _target_: flax.linen.Conv
+        features: 16
+        kernel_size: [3, 3]
+        strides: [1, 1]
+      - _target_: flax.linen.relu
+        _partial_: true
+      - _target_: memorax.networks.Flatten
+        start_dim: 2
+      - _target_: flax.linen.Dense
+        features: 128
+      - _target_: flax.linen.relu
+        _partial_: true
 
 algorithm:
   num_envs: 128

@@ -21,12 +21,10 @@ feature_extractor:
   observation_extractor:
     _target_: flax.linen.Sequential
     layers:
-      _target_: builtins.tuple
-      _args_:
-        - - _target_: flax.linen.Dense
-            features: 256
-          - _target_: flax.linen.relu
-            _partial_: true
+      - _target_: flax.linen.Dense
+        features: 256
+      - _target_: flax.linen.relu
+        _partial_: true
 
 actor_optimizer:
   _target_: optax.chain
