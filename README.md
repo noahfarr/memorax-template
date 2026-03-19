@@ -64,8 +64,8 @@ config/
 | `pqn` | [PQN](https://arxiv.org/abs/2407.04811) |
 | `dqn` | [DQN](https://arxiv.org/abs/1312.5602) |
 | `sac` | [SAC](https://arxiv.org/abs/1801.01290) |
-| `ac_lambda` | [AC(λ)](https://arxiv.org/abs/2410.09290) |
-| `gradient_ppo` | [Gradient PPO](https://arxiv.org/abs/2409.19750) |
+| `ac_lambda` | [AC(λ)](https://arxiv.org/abs/2410.14606) |
+| `gradient_ppo` | [Gradient PPO](https://arxiv.org/abs/2507.09087) |
 | `mappo` | [MAPPO](https://arxiv.org/abs/2103.01955) |
 | `r2d2` | [R2D2](https://openreview.net/forum?id=r1lyTjAqYX) |
 
@@ -81,10 +81,10 @@ config/
 | `lru` | [LRU](https://arxiv.org/abs/2303.06349) |
 | `s5` | [S5](https://arxiv.org/abs/2208.04933) |
 | `mamba` | [Mamba](https://arxiv.org/abs/2312.00752) |
-| `ffm` | [FFM](https://arxiv.org/abs/2306.09827) |
+| `ffm` | [FFM](https://arxiv.org/abs/2310.04128) |
 | `rtu` | [RTU](https://arxiv.org/abs/2407.14953) |
-| `rtrl` | [RTRL](https://arxiv.org/abs/2410.09904) |
-| `shm` | [SHM](https://arxiv.org/abs/2502.10029) |
+| `rtrl` | [RTRL](https://doi.org/10.1162/neco.1989.1.2.270) |
+| `shm` | [SHM](https://arxiv.org/abs/2410.10132) |
 | `slstm` | [sLSTM](https://arxiv.org/abs/2405.04517) |
 | `mlstm` | [mLSTM](https://arxiv.org/abs/2405.04517) |
 
