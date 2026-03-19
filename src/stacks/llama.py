@@ -1,6 +1,7 @@
 import flax.linen as nn
 from hydra.utils import instantiate
-from memorax.networks.blocks import GLU, GatedResidual, PreNorm, Projection, Stack
+from memorax.networks.blocks import (GLU, GatedResidual, PreNorm, Projection,
+                                     Stack)
 
 
 def llama(features, num_layers, expansion_factor, torso):

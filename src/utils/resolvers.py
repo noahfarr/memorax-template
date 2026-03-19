@@ -24,24 +24,21 @@ def cascading_fallback(algorithm: str, environment: str, torso=None) -> str:
 
     loader = gh.config_loader()
 
-    group, env_id = environment.split("/", 1)
+    env_path = Path(environment)
 
-    search_group = f"hyperparameters/{algorithm}/{group}"
+    # Try most specific to least specific path.
+    # e.g. for "gymnax/minatar/breakout": try breakout, then minatar, then gymnax
+    for path in [env_path, *env_path.parents]:
+        if path == Path("."):
+            break
+        search_group = f"hyperparameters/{algorithm}/{path.parent}" if str(path.parent) != "." else f"hyperparameters/{algorithm}"
+        if path.name in loader.get_group_options(search_group):
+            result = f"{algorithm}/{path}"
+            if torso and torso in loader.get_group_options(f"hyperparameters/{result}"):
+                return f"{result}/{torso}"
+            return result
 
-    if torso:
-
-        available_options = loader.get_group_options(f"{search_group}/{env_id}")
-
-        if torso in available_options:
-            return f"{algorithm}/{group}/{env_id}/{torso}"
-
-    search_group = f"hyperparameters/{algorithm}/{group}"
-    available_options = loader.get_group_options(search_group)
-
-    if env_id in available_options:
-        return f"{algorithm}/{group}/{env_id}"
-
-    return f"{algorithm}/{group}"
+    return f"{algorithm}/{env_path.parts[0]}"
 
 
 def get_group(_root_):

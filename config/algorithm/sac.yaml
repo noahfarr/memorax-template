@@ -26,6 +26,7 @@ feature_extractor:
         - - _target_: flax.linen.Dense
             features: 256
           - _target_: flax.linen.relu
+            _partial_: true
 
 actor_optimizer:
   _target_: optax.chain
