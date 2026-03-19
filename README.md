@@ -92,11 +92,10 @@ config/
 
 Environments span several JAX-native suites:
 
-- **Gymnax**: CartPole, BSuite (Memory Chain), MinAtar (Asterix, Breakout, Freeway)
+- **Gymnax**: CartPole, BSuite, MinAtar
 - **Gymnasium**: CartPole
 - **Brax**: Ant, HalfCheetah, Hopper, Walker
 - **MuJoCo Playground**: Ant, CartPole Balance, CartPole Swingup, Humanoid
-- **MuJoCo** (via Memorax): Ant
 - **ALE**: Breakout
 - **GXM Atari**: Breakout
 - **JaxMARL**: SMAX
