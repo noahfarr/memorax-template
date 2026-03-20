@@ -31,12 +31,12 @@ optimizer:
     - _target_: optax.clip_by_global_norm
       max_norm: 0.5
     - _target_: optax.adam
-      learning_rate: 3e-4
+      learning_rate: 2.5e-4
 
 algorithm:
   _target_: memorax.algorithms.MAPPOConfig
   name: mappo
-  num_envs: 32
+  num_envs: 4
   num_steps: 128
   gae_lambda: 0.95
   num_minibatches: 4

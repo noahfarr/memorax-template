@@ -34,7 +34,23 @@ feature_extractor:
       - _target_: flax.linen.relu
         _partial_: true
 
-optimizer:
+actor_optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 0.5
+    - _target_: optax.adam
+      learning_rate: 3e-4
+
+critic_optimizer:
+  _target_: optax.chain
+  _args_:
+    - _target_: optax.clip_by_global_norm
+      max_norm: 0.5
+    - _target_: optax.adam
+      learning_rate: 3e-3
+
+h_optimizer:
   _target_: optax.chain
   _args_:
     - _target_: optax.clip_by_global_norm
@@ -45,14 +61,14 @@ optimizer:
 algorithm:
   _target_: memorax.algorithms.GradientPPOConfig
   name: gradient_ppo
-  num_envs: 32
-  num_steps: 128
+  num_envs: 1
+  num_steps: 2048
   gae_lambda: 0.95
-  num_minibatches: 4
+  num_minibatches: 8
   update_epochs: 4
   normalize_advantage: True
   clip_coefficient: 0.2
   clip_value_loss: True
-  entropy_coefficient: 0.01
-  regularization_coefficient: 0.01
-  truncation_length: 16
+  entropy_coefficient: 0.0
+  regularization_coefficient: 1.0
+  truncation_length: 32

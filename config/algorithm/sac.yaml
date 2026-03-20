@@ -40,26 +40,27 @@ critic_optimizer:
     - _target_: optax.clip_by_global_norm
       max_norm: 0.5
     - _target_: optax.adam
-      learning_rate: 3e-4
+      learning_rate: 1e-3
 
 alpha_optimizer:
   _target_: optax.adam
-  learning_rate: 3e-4
+  learning_rate: 1e-3
+
+sequence_length: 128
 
 buffer:
   _target_: flashbax.make_trajectory_buffer
   add_batch_size: ${algorithm.num_envs}
   sample_batch_size: 256
-  sample_sequence_length: ${algorithm.num_steps}
+  sample_sequence_length: ${sequence_length}
   period: 1
-  min_length_time_axis: ${algorithm.num_steps}
-  max_length_time_axis: 100_000
+  min_length_time_axis: ${sequence_length}
+  max_length_time_axis: 1_000_000
 
 algorithm:
   _target_: memorax.algorithms.SACConfig
   name: sac
-  num_envs: 32
-  num_steps: 128
+  num_envs: 1
   tau: 0.005
   train_frequency: 1
   target_update_frequency: 1

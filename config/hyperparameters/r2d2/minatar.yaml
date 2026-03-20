@@ -5,7 +5,6 @@ num_epochs: 1220
 
 algorithm:
   num_envs: 64
-  num_steps: 128
   tau: 1.0
   target_update_frequency: 500
   train_frequency: 4

@@ -20,15 +20,13 @@ def main(cfg):
 
     env, env_params = environment.make(**cfg.environment)
 
-    algo_num_steps = cfg.algorithm.get(
-        "num_steps", cfg.algorithm.get("train_frequency", 128)
-    )
+    num_steps = cfg.algorithm.get("num_steps", 1)
     max_episode_steps = (
-        env_params.max_steps_in_episode if env_params is not None else algo_num_steps
+        env_params.max_steps_in_episode if env_params is not None else num_steps
     )
     num_steps = max(
         cfg.total_timesteps // cfg.num_epochs,
-        max(algo_num_steps, max_episode_steps) * cfg.algorithm.num_envs,
+        max(num_steps, max_episode_steps) * cfg.algorithm.num_envs,
     )
 
     loggers = [

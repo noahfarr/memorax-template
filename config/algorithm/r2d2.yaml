@@ -25,14 +25,13 @@ optimizer:
     - _target_: optax.clip_by_global_norm
       max_norm: 1.0
     - _target_: optax.adam
-      learning_rate: 5e-4
-      eps: 1e-5
+      learning_rate: 1e-4
 
 epsilon_schedule:
   _target_: optax.linear_schedule
   init_value: 1.0
   end_value: 0.05
-  transition_steps: ${eval:'int(0.2 * ${total_timesteps})'}
+  transition_steps: ${eval:'int(0.5 * ${total_timesteps})'}
 
 beta_schedule:
   _target_: optax.linear_schedule
@@ -43,7 +42,7 @@ beta_schedule:
 buffer:
   _target_: flashbax.make_prioritised_trajectory_buffer
   add_batch_size: ${algorithm.num_envs}
-  sample_batch_size: 32
+  sample_batch_size: 64
   sample_sequence_length: ${eval:'${algorithm.sequence_length} + ${algorithm.burn_in_length}'}
   period: 1
   min_length_time_axis: ${eval:'${algorithm.sequence_length} + ${algorithm.burn_in_length}'}
@@ -53,12 +52,11 @@ buffer:
 algorithm:
   _target_: memorax.algorithms.R2D2Config
   name: r2d2
-  num_envs: 32
-  num_steps: 128
+  num_envs: 1
   tau: 1.0
-  target_update_frequency: 500
+  target_update_frequency: 2500
   train_frequency: 4
-  burn_in_length: 10
+  burn_in_length: 40
   sequence_length: 80
   n_step: 5
   priority_exponent: 0.9

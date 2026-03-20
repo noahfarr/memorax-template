@@ -4,9 +4,10 @@ total_timesteps: 10_000_000
 num_epochs: 39
 num_eval_steps: 0
 
+sequence_length: 8
+
 algorithm:
   num_envs: 256
-  num_steps: 8
   tau: 0.005
   train_frequency: 1
   target_update_frequency: 1

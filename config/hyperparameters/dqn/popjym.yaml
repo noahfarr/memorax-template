@@ -16,9 +16,10 @@ optimizer:
 epsilon_schedule:
   transition_steps: ${eval:'int(0.25 * ${total_timesteps})'}
 
+sequence_length: 512
+
 algorithm:
   num_envs: 64
-  num_steps: 512
   tau: 1.0
   target_update_frequency: 500
   train_frequency: 4

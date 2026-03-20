@@ -1,13 +1,9 @@
 from hydra.utils import instantiate
 from memorax.algorithms import R2D2
 from memorax.networks import Network
-from omegaconf import open_dict
 
 
 def make(cfg, env, env_params):
-    with open_dict(cfg):
-        cfg.algorithm.pop("num_steps")
-
     feature_extractor = instantiate(cfg.feature_extractor)
     torso = instantiate(cfg.stack)
     head = instantiate(cfg.head)

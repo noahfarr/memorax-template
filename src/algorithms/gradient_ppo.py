@@ -25,8 +25,6 @@ def make(cfg, env, env_params):
         head=instantiate(cfg.h_head),
     )
 
-    optimizer = instantiate(cfg.optimizer)
-
     agent = GradientPPO(
         cfg=instantiate(cfg.algorithm),
         env=env,
@@ -34,8 +32,8 @@ def make(cfg, env, env_params):
         actor_network=actor_network,
         critic_network=critic_network,
         h_network=h_network,
-        actor_optimizer=optimizer,
-        critic_optimizer=optimizer,
-        h_optimizer=optimizer,
+        actor_optimizer=instantiate(cfg.actor_optimizer),
+        critic_optimizer=instantiate(cfg.critic_optimizer),
+        h_optimizer=instantiate(cfg.h_optimizer),
     )
     return agent

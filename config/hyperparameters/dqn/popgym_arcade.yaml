@@ -13,14 +13,13 @@ optimizer:
         _target_: optax.linear_schedule
         init_value: 5e-5
         end_value: 5e-7
-        transition_steps: ${eval:'${total_timesteps} // ${algorithm.num_steps} // ${algorithm.num_envs}'}
+        transition_steps: ${eval:'${total_timesteps} // ${algorithm.train_frequency}'}
 
 epsilon_schedule:
   transition_steps: ${eval:'int(0.25 * ${total_timesteps})'}
 
 algorithm:
   num_envs: 32
-  num_steps: 128
   tau: 1.0
   target_update_frequency: 500
   train_frequency: 4
