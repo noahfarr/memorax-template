@@ -1,12 +1,8 @@
 # @package _global_
+# https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/dqn.py
 
 defaults:
-  - /torso: mlp
-  - /stack: llama
-
-head:
-  _target_: memorax.networks.heads.DiscreteQNetwork
-  action_dim: ${get_action_dim:${environment}}
+  - /head@head: discrete_q_network
 
 feature_extractor:
   _target_: memorax.networks.FeatureExtractor
@@ -15,17 +11,17 @@ feature_extractor:
     _target_: flax.linen.Sequential
     layers:
       - _target_: flax.linen.Dense
-        features: 256
+        features: 120
+      - _target_: flax.linen.relu
+        _partial_: true
+      - _target_: flax.linen.Dense
+        features: 84
       - _target_: flax.linen.relu
         _partial_: true
 
 optimizer:
-  _target_: optax.chain
-  _args_:
-    - _target_: optax.clip_by_global_norm
-      max_norm: 1.0
-    - _target_: optax.adam
-      learning_rate: 2.5e-4
+  _target_: optax.adam
+  learning_rate: 2.5e-4
 
 epsilon_schedule:
   _target_: optax.linear_schedule
@@ -42,13 +38,13 @@ buffer:
   sample_sequence_length: ${sequence_length}
   period: 1
   min_length_time_axis: ${sequence_length}
-  max_length_time_axis: 10_000
+  max_length_time_axis: 1_000
 
 algorithm:
   _target_: memorax.algorithms.DQNConfig
   name: dqn
-  num_envs: 1
+  num_envs: 10
   tau: 1.0
   target_update_frequency: 500
-  train_frequency: 4
+  train_frequency: 10
   burn_in_length: 0

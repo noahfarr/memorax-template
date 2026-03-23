@@ -1,19 +1,13 @@
 # @package _global_
+# https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/sac_continuous_action.py
 
 defaults:
-  - /torso: mlp
-  - /stack: llama
-
-actor_head:
-  _target_: memorax.networks.heads.SquashedGaussian
-  action_dim: ${get_action_dim:${environment}}
-
-critic_head:
-  _target_: memorax.networks.heads.TwinContinuousQNetwork
+  - /head@actor_head: squashed_gaussian
+  - /head@critic_head: twin_continuous_q_network
 
 alpha:
   _target_: memorax.networks.heads.Alpha
-  initial_alpha: 1.0
+  initial_alpha: 0.2
 
 feature_extractor:
   _target_: memorax.networks.FeatureExtractor
@@ -25,22 +19,18 @@ feature_extractor:
         features: 256
       - _target_: flax.linen.relu
         _partial_: true
+      - _target_: flax.linen.Dense
+        features: 256
+      - _target_: flax.linen.relu
+        _partial_: true
 
 actor_optimizer:
-  _target_: optax.chain
-  _args_:
-    - _target_: optax.clip_by_global_norm
-      max_norm: 0.5
-    - _target_: optax.adam
-      learning_rate: 3e-4
+  _target_: optax.adam
+  learning_rate: 3e-4
 
 critic_optimizer:
-  _target_: optax.chain
-  _args_:
-    - _target_: optax.clip_by_global_norm
-      max_norm: 0.5
-    - _target_: optax.adam
-      learning_rate: 1e-3
+  _target_: optax.adam
+  learning_rate: 1e-3
 
 alpha_optimizer:
   _target_: optax.adam
@@ -64,6 +54,6 @@ algorithm:
   tau: 0.005
   train_frequency: 1
   target_update_frequency: 1
-  target_entropy_scale: 0.5
+  target_entropy_scale: 1.0
   gradient_steps: 1
   burn_in_length: 0

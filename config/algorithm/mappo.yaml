@@ -1,15 +1,16 @@
 # @package _global_
+# https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/ppo.py
 
 defaults:
-  - /torso: mlp
-  - /stack: llama
+  - /head@actor_head: categorical
+  - /head@critic_head: v_network
 
 actor_head:
-  _target_: memorax.networks.heads.Categorical
-  action_dim: ${get_action_dim:${environment}}
+  kernel_init:
+    _target_: flax.linen.initializers.orthogonal
+    scale: 0.01
 
 critic_head:
-  _target_: memorax.networks.heads.VNetwork
   kernel_init:
     _target_: flax.linen.initializers.orthogonal
     scale: 1.0
@@ -21,8 +22,18 @@ feature_extractor:
     _target_: flax.linen.Sequential
     layers:
       - _target_: flax.linen.Dense
-        features: 256
-      - _target_: flax.linen.relu
+        features: 64
+        kernel_init:
+          _target_: flax.linen.initializers.orthogonal
+          scale: ${eval:'2**0.5'}
+      - _target_: flax.linen.tanh
+        _partial_: true
+      - _target_: flax.linen.Dense
+        features: 64
+        kernel_init:
+          _target_: flax.linen.initializers.orthogonal
+          scale: ${eval:'2**0.5'}
+      - _target_: flax.linen.tanh
         _partial_: true
 
 optimizer:

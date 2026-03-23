@@ -1,0 +1,2 @@
+_target_: memorax.networks.heads.Categorical
+action_dim: ${get_action_dim:${environment}}

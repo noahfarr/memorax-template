@@ -1,6 +1,0 @@
-# @package _global_
-
-total_timesteps: 5_000_000
-num_epochs: 50
-num_eval_steps: 10_000
-

@@ -1,12 +1,8 @@
 # @package _global_
+# https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/pqn.py
 
 defaults:
-  - /torso: mlp
-  - /stack: llama
-
-head:
-  _target_: memorax.networks.heads.DiscreteQNetwork
-  action_dim: ${get_action_dim:${environment}}
+  - /head@head: discrete_q_network
 
 feature_extractor:
   _target_: memorax.networks.FeatureExtractor
@@ -15,7 +11,19 @@ feature_extractor:
     _target_: flax.linen.Sequential
     layers:
       - _target_: flax.linen.Dense
-        features: 256
+        features: 120
+        kernel_init:
+          _target_: flax.linen.initializers.orthogonal
+          scale: ${eval:'2**0.5'}
+      - _target_: flax.linen.LayerNorm
+      - _target_: flax.linen.relu
+        _partial_: true
+      - _target_: flax.linen.Dense
+        features: 84
+        kernel_init:
+          _target_: flax.linen.initializers.orthogonal
+          scale: ${eval:'2**0.5'}
+      - _target_: flax.linen.LayerNorm
       - _target_: flax.linen.relu
         _partial_: true
 
@@ -24,7 +32,7 @@ optimizer:
   _args_:
     - _target_: optax.clip_by_global_norm
       max_norm: 10.0
-    - _target_: optax.adam
+    - _target_: optax.radam
       learning_rate: 2.5e-4
 
 epsilon_schedule:

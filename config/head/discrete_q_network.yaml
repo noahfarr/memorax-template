@@ -1,0 +1,2 @@
+_target_: memorax.networks.heads.DiscreteQNetwork
+action_dim: ${get_action_dim:${environment}}

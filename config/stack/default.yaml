@@ -1,0 +1,4 @@
+name: None
+_target_: memorax.networks.blocks.Stack
+blocks:
+  - ${torso}

@@ -1,15 +1,11 @@
 # @package _global_
+# https://github.com/mohmdelsayed/streaming-drl
 
 defaults:
-  - /torso: mlp
-  - /stack: llama
-
-actor_head:
-  _target_: memorax.networks.heads.Categorical
-  action_dim: ${get_action_dim:${environment}}
+  - /head@actor_head: categorical
+  - /head@critic_head: v_network
 
 critic_head:
-  _target_: memorax.networks.heads.VNetwork
   kernel_init:
     _target_: flax.linen.initializers.orthogonal
     scale: 1.0
@@ -21,8 +17,18 @@ feature_extractor:
     _target_: flax.linen.Sequential
     layers:
       - _target_: flax.linen.Dense
-        features: 256
-      - _target_: flax.linen.relu
+        features: 128
+      - _target_: flax.linen.LayerNorm
+        use_scale: false
+        use_bias: false
+      - _target_: flax.linen.leaky_relu
+        _partial_: true
+      - _target_: flax.linen.Dense
+        features: 128
+      - _target_: flax.linen.LayerNorm
+        use_scale: false
+        use_bias: false
+      - _target_: flax.linen.leaky_relu
         _partial_: true
 
 algorithm:
@@ -30,7 +36,7 @@ algorithm:
   name: ac_lambda
   num_envs: 1
   num_steps: 1
-  trace_lambda: 0.9
+  trace_lambda: 0.8
   actor_lr: 1.0
   critic_lr: 1.0
   actor_kappa: 3.0

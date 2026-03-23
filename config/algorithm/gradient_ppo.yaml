@@ -1,24 +1,22 @@
 # @package _global_
+# https://github.com/esraaelelimy/gtd_algos
 
 defaults:
-  - /torso: mlp
-  - /stack: llama
+  - /head@actor_head: gaussian
+  - /head@critic_head: v_network
+  - /head@h_head: v_network
 
 actor_head:
-  _target_: memorax.networks.heads.Gaussian
-  action_dim: ${get_action_dim:${environment}}
   kernel_init:
     _target_: flax.linen.initializers.orthogonal
     scale: 0.01
 
 critic_head:
-  _target_: memorax.networks.heads.VNetwork
   kernel_init:
     _target_: flax.linen.initializers.orthogonal
     scale: 1.0
 
 h_head:
-  _target_: memorax.networks.heads.VNetwork
   kernel_init:
     _target_: flax.linen.initializers.orthogonal
     scale: 1.0
@@ -30,8 +28,18 @@ feature_extractor:
     _target_: flax.linen.Sequential
     layers:
       - _target_: flax.linen.Dense
-        features: 256
-      - _target_: flax.linen.relu
+        features: 64
+        kernel_init:
+          _target_: flax.linen.initializers.orthogonal
+          scale: ${eval:'2**0.5'}
+      - _target_: flax.linen.tanh
+        _partial_: true
+      - _target_: flax.linen.Dense
+        features: 64
+        kernel_init:
+          _target_: flax.linen.initializers.orthogonal
+          scale: ${eval:'2**0.5'}
+      - _target_: flax.linen.tanh
         _partial_: true
 
 actor_optimizer:
@@ -41,6 +49,7 @@ actor_optimizer:
       max_norm: 0.5
     - _target_: optax.adam
       learning_rate: 3e-4
+      eps: 1e-5
 
 critic_optimizer:
   _target_: optax.chain
@@ -49,6 +58,7 @@ critic_optimizer:
       max_norm: 0.5
     - _target_: optax.adam
       learning_rate: 3e-3
+      eps: 1e-5
 
 h_optimizer:
   _target_: optax.chain
@@ -56,19 +66,20 @@ h_optimizer:
     - _target_: optax.clip_by_global_norm
       max_norm: 0.5
     - _target_: optax.adam
-      learning_rate: 3e-4
+      learning_rate: 3e-3
+      eps: 1e-5
 
 algorithm:
   _target_: memorax.algorithms.GradientPPOConfig
   name: gradient_ppo
-  num_envs: 1
-  num_steps: 2048
+  num_envs: 64
+  num_steps: 32
   gae_lambda: 0.95
   num_minibatches: 8
   update_epochs: 4
   normalize_advantage: True
   clip_coefficient: 0.2
-  clip_value_loss: True
+  clip_value_loss: False
   entropy_coefficient: 0.0
   regularization_coefficient: 1.0
   truncation_length: 32

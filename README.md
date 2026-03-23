@@ -151,8 +151,6 @@ Pre-configured shell scripts for common experiment sweeps are in `scripts/`:
 | `dqn_popjym.sh` | DQN on PopJym environments |
 | `sac_brax.sh` | SAC on Brax environments |
 | `sac_mujoco_playground.sh` | SAC on MuJoCo Playground environments |
-| `ac_lambda_brax.sh` | AC(λ) on Brax environments |
-| `ac_lambda_popjym.sh` | AC(λ) on PopJym environments |
 
 ## Plotting
 
